@@ -4,7 +4,8 @@
 const {Router} = require("express");
 const usersRouter = require("./users.routes");
 const notesRouter = require("./notes.routes");
-const tagsRouter = require("./tags.routes")
+const tagsRouter = require("./tags.routes");
+const sessionsRouter = require("./sessions.routes")
 
 const routes=Router();
 
@@ -13,5 +14,6 @@ routes.use("/users", usersRouter)
 //então dentro do user.routes, não precisa ter o /users, mas apenas a "/"
 routes.use("/notes", notesRouter)
 routes.use("/tags", tagsRouter)
+routes.use("/sessions", sessionsRouter)
 
 module.exports = routes;
