@@ -8,13 +8,13 @@ class NotesController {
     const note_id = await knex("notes").insert({
       title,
       description,
-      user_id,
+      user_id
     });
     //insere a nota recuperando o código da nota que foi inserida
-    const linksInsert = links.map((link) => {
+    const linksInsert = links.map(link => {
       return {
         note_id,
-        url: link,
+        url: link
         //transforma a url em link
       };
     });
@@ -54,22 +54,22 @@ class NotesController {
   }
 
   async index(request, response) {
-    const { user_id, title, tags } = request.query;
+    const { title, user_id, tags } = request.query;
 
     let notes;
     if (tags) {
-      const filterTags= tags.split(",").map(tag => tag.trim()) //converte o texto em array, utilizando como delimitador a vírgula
+      const filterTags= tags.split(",").map(tag => tag) //converte o texto em array, utilizando como delimitador a vírgula
 
      notes = await knex("tags") //pesquisa com base nas tags
      .select([
       //seleciona campos de tabelas diferentes. Nome da tabela+nome do campo:
       "notes.id",
       "notes.title",
-      "notes.user_id",
+      "notes.user_id"
      ])
      .where("notes.user_id", user_id) //filtra com base no id do usuário
      .whereLike("notes.title", `%${title}%`)
-     .whereIn("name", filterTags)// analisar baseado na tag; Pega o name e passa o vetor que será comparado para saber se a tag existe ou não
+     .whereIn("name", filterTags)// analisa baseado na tag; Pega o name e passa o vetor que será comparado para saber se a tag existe ou não
      .innerJoin("notes", "notes.id", "tags.note_id")//conecta tabela notes com os campos de id e notes_id
      .orderBy("notes.title") //organizar por ordem alfabética o título
     } else {
