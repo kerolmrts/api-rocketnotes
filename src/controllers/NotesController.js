@@ -3,7 +3,7 @@ const knex = require("../database/knex");
 class NotesController {
   async create(request, response) {
     const { title, description, tags, links } = request.body;
-    const { user_id } = request.params;
+    const user_id = request.user.id;
 
     const note_id = await knex("notes").insert({
       title,
@@ -54,7 +54,9 @@ class NotesController {
   }
 
   async index(request, response) {
-    const { title, user_id, tags } = request.query;
+    const { title, tags } = request.query;
+
+    const user_id= request.user.id;
 
     let notes;
     if (tags) {
@@ -68,8 +70,8 @@ class NotesController {
       "notes.user_id"
      ])
      .where("notes.user_id", user_id) //filtra com base no id do usuário
-     .whereLike("notes.title", `%${title}%`)
-     .whereIn("name", filterTags)// analisa baseado na tag; Pega o name e passa o vetor que será comparado para saber se a tag existe ou não
+     .whereLike("title", `%${title}%`)
+     .whereIn("tags.name", filterTags)// analisa baseado na tag; Pega o name e passa o vetor que será comparado para saber se a tag existe ou não
      .innerJoin("notes", "notes.id", "tags.note_id")//conecta tabela notes com os campos de id e notes_id
      .orderBy("notes.title") //organizar por ordem alfabética o título
     } else {
